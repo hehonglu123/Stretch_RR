@@ -1,6 +1,6 @@
 service edu.rpi.robotics.stretch
 
-stdver 1.0
+stdver 0.9
 
 object stretch_arm
 	property	string			name
@@ -26,9 +26,7 @@ object stretch_base
 	function 	void			enable_pos_incr_mode()
 	function 	void			translate_by(double x_m)
 	function 	void			rotate_by(double x_m)
-	function 	void			set_translate_velocity(double v_m)
-	function 	void			set_rotational_velocity(double v_r)
-	function 	void			set_velocity(double v_m, double w_r)
+
 	function 	void			step_sentry(double x_lift, double x_arm, double x_wrist)
 	function 	void			push_command()
 end
@@ -52,12 +50,11 @@ end
 object stretch_wacc
 	function 	void			startup()
 	function 	void			stop()
-	function 	void			set_D2(uint8 on)
-	function 	void			set_D3(uint8 on)
+	
 	function 	void			push_command()
 end
 
-object robot
+object stretch
 	objref 		stretch_arm 	arm
 	objref 		stretch_pimu 	pimu
 	objref	 	stretch_base 	base
@@ -65,7 +62,7 @@ object robot
 	objref	 	stretch_head 	head
 	function 	void			startup()
 	function 	void			stop()
-	function 	stretch_status	get_status()
+	
 	function 	void			push_command()
 	function 	bool			is_calibrated()
 	function 	void			stow()
