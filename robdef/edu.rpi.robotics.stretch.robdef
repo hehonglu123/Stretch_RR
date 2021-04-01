@@ -1,0 +1,75 @@
+service edu.rpi.robotics.stretch
+
+stdver 1.0
+
+object stretch_arm
+	property	string			name
+	property	double{string}	status
+	function 	void			startup()
+	function 	void			stop()
+	function 	void			push_command()
+	function 	void			move_to(double x_m)
+	function	void			move_by(double x_m)
+
+end
+object stretch_pimu
+
+end
+object stretch_base
+	property	string			name
+	property	bool			first_step
+	property	double			meters_per_motor_rad
+	property	double			wheel_separation_m 
+	function 	void			startup()
+	function 	void			stop()
+	function 	void			enable_freewheel_mode()
+	function 	void			enable_pos_incr_mode()
+	function 	void			translate_by(double x_m)
+	function 	void			rotate_by(double x_m)
+	function 	void			set_translate_velocity(double v_m)
+	function 	void			set_rotational_velocity(double v_r)
+	function 	void			set_velocity(double v_m, double w_r)
+	function 	void			step_sentry(double x_lift, double x_arm, double x_wrist)
+	function 	void			push_command()
+end
+object stretch_lift
+	property	string			name
+	function 	void			startup()
+	function 	void			stop()
+	function 	void			push_command()
+	function 	void			move_to(double x_m)
+	function	void			move_by(double x_m)
+
+end
+object stretch_head
+	property	string			name
+	property	string{list}	joints
+	function 	void			home()
+	function 	void			pose(string p)
+	function 	void			move_to(string joint, double x_r)
+	function	void			move_by(string joint, double x_r)
+end
+object stretch_wacc
+	function 	void			startup()
+	function 	void			stop()
+	function 	void			set_D2(uint8 on)
+	function 	void			set_D3(uint8 on)
+	function 	void			push_command()
+end
+
+object robot
+	objref 		stretch_arm 	arm
+	objref 		stretch_pimu 	pimu
+	objref	 	stretch_base 	base
+	objref	 	stretch_lift 	lift
+	objref	 	stretch_head 	head
+	function 	void			startup()
+	function 	void			stop()
+	function 	stretch_status	get_status()
+	function 	void			push_command()
+	function 	bool			is_calibrated()
+	function 	void			stow()
+	function 	void			home()
+
+
+end
