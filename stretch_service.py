@@ -24,8 +24,9 @@ from stretch_body.wacc import Wacc
 # # 2. would be nice to have logs on client side
 # # 3. RR request timeout for home()
 # # 4. ALL status dict needs overwritten
-
-class arm_RR(Arm)
+####timeout option
+# # --robotraconteur-disable-timeouts=true
+class arm_RR(Arm):
 	def __init__(self):
 		Arm.__init__(self)
 		self.status_rr= {'pos': 0.0, 'vel': 0.0, 'force':0.0,'timestamp_pc':0}
