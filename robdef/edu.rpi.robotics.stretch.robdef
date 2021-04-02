@@ -4,7 +4,7 @@ stdver 0.9
 
 object stretch_arm
 	property	string			name
-	property	double{string}	status
+	property	double{string}	status_rr
 	function 	void			startup()
 	function 	void			stop()
 	function 	void			push_command()
@@ -20,12 +20,16 @@ object stretch_base
 	property	bool			first_step
 	property	double			meters_per_motor_rad
 	property	double			wheel_separation_m 
+	property	double{string}	status_rr
 	function 	void			startup()
 	function 	void			stop()
 	function 	void			enable_freewheel_mode()
 	function 	void			enable_pos_incr_mode()
 	function 	void			translate_by(double x_m)
 	function 	void			rotate_by(double x_m)
+	function 	void			rr_set_translate_velocity(double v_m)
+	function 	void			rr_set_rotational_velocity(double v_r)
+	function 	void			rr_set_velocity(double v_m, double w_r)
 
 	function 	void			step_sentry(double x_lift, double x_arm, double x_wrist)
 	function 	void			push_command()
@@ -42,17 +46,27 @@ end
 object stretch_head
 	property	string			name
 	property	string{list}	joints
+	property	double[]{string} poses
 	function 	void			home()
 	function 	void			pose(string p)
 	function 	void			move_to(string joint, double x_r)
 	function	void			move_by(string joint, double x_r)
 end
 object stretch_wacc
+	property	double{string}	status_rr	
 	function 	void			startup()
 	function 	void			stop()
-	
+	function 	void			rr_set_D2(uint8 on)
+	function 	void			rr_set_D3(uint8 on)
 	function 	void			push_command()
 end
+object stretch_imu
+	property	double{string}	status_rr
+	function	double{string}	rr_get_status()
+	function	double{list}	rr_get_quaternion()
+end
+
+
 
 object stretch
 	objref 		stretch_arm 	arm
