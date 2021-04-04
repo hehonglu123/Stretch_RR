@@ -2,7 +2,7 @@ service edu.rpi.robotics.stretch
 
 stdver 0.9
 
-object stretch_arm
+object stretch_Arm
 	property	string			name
 	property	double{string}	status_rr
 	function 	void			startup()
@@ -12,10 +12,34 @@ object stretch_arm
 	function	void			move_by(double x_m)
 
 end
-object stretch_pimu
-
+object stretch_Pimu
+	property	bool			verbose
+	objref		stretch_Imu 	imu
+	property	double{string}	status_rr
+	property	double{string}	board_info
+	property	bool			fan_on_last
+	property	double			ts_last_fan_on
+	function 	void			startup()
+	function 	void			stop()
+	function 	void			pull_status()
+	function 	void			push_command()
+	function 	void			runstop_event_reset()
+	function 	void			runstop_event_trigger()
+	function 	void			trigger_beep()
+	function 	void			imu_reset()
+	function 	void			trigger_motor_sync()
+	function 	void			rr_set_fan_on()
+	function 	void			rr_set_fan_off()
+	function 	void			rr_set_buzzer_on()
+	function 	void			rr_set_buzzer_off()
+	function 	void			board_reset()
+	function 	void			cliff_event_reset()
+	function 	double			rr_get_voltage(double raw)
+	function 	double			rr_get_temp(double raw)
+	function 	double			rr_get_current(double raw)
 end
-object stretch_base
+
+object stretch_Base
 	property	string			name
 	property	bool			first_step
 	property	double			meters_per_motor_rad
@@ -34,7 +58,7 @@ object stretch_base
 	function 	void			step_sentry(double x_lift, double x_arm, double x_wrist)
 	function 	void			push_command()
 end
-object stretch_lift
+object stretch_Lift
 	property	string			name
 	function 	void			startup()
 	function 	void			stop()
@@ -43,7 +67,7 @@ object stretch_lift
 	function	void			move_by(double x_m)
 
 end
-object stretch_head
+object stretch_Head
 	property	string			name
 	property	string{list}	joints
 	property	double[]{string} poses
@@ -52,7 +76,7 @@ object stretch_head
 	function 	void			move_to(string joint, double x_r)
 	function	void			move_by(string joint, double x_r)
 end
-object stretch_wacc
+object stretch_Wacc
 	property	double{string}	status_rr	
 	function 	void			startup()
 	function 	void			stop()
@@ -60,20 +84,31 @@ object stretch_wacc
 	function 	void			rr_set_D3(uint8 on)
 	function 	void			push_command()
 end
-object stretch_imu
+object stretch_Imu
 	property	double{string}	status_rr
 	function	double{string}	rr_get_status()
 	function	double{list}	rr_get_quaternion()
 end
 
+object stretch_EndOfArm
+	property	string			name
+	property	string{list}	joints
+	function 	void			pose(string joint)
+	function 	void			move_to(string joint, double x_r)
+	function	void			move_by(string joint, double x_r)
+	function 	void			home(string joint)
+	function	bool			is_tool_present(string class_name)
+end
 
 
 object stretch
-	objref 		stretch_arm 	arm
-	objref 		stretch_pimu 	pimu
-	objref	 	stretch_base 	base
-	objref	 	stretch_lift 	lift
-	objref	 	stretch_head 	head
+	objref 		stretch_Arm 	arm
+	objref 		stretch_Pimu 	pimu
+	objref	 	stretch_Base 	base
+	objref	 	stretch_Lift 	lift
+	objref	 	stretch_Head 	head
+	objref	 	stretch_Wacc 	wacc
+	objref	 	stretch_EndOfArm 	end_of_arm
 	function 	void			startup()
 	function 	void			stop()
 	

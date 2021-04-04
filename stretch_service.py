@@ -226,28 +226,81 @@ class wacc_RR(Wacc):
 	def rr_set_D3(self,on): #0 or 1
 		self.set_D3(on)
 
+class pimu_RR(Wacc):
+	def __init__(self):
+		Pimu.__init__(self)
+		self.status_rr= {'voltage': 0, 'current': 0, 'temp': 0,'cpu_temp': 0, 'frame_id': 0,
+                       'timestamp': 0, 'runstop_event': False, 'bump_event_cnt': 0,
+                       'cliff_event': False, 'fan_on': False, 'buzzer_on': False, 'low_voltage_alert':False,'high_current_alert':False,'over_tilt_alert':False,
+                       'debug':0}
+    def rr_get_voltage(self,raw):
+    	return self.get_voltage(raw)
+	def rr_get_temp(self,raw):
+        
+        return self.get_temp(raw)
+
+    def rr_get_current(self,raw):
+    	return self.get_current(raw)
+
+    def rr_set_fan_on(self):
+        return self.set_fan_on()
+
+    def rr_set_fan_off(self):
+        return self.set_fan_off()
+
+    def rr_set_buzzer_on(self):
+        return self.set_buzzer_on()
+
+    def rr_set_buzzer_off(self):
+    	return self.set_buzzer_off()
+
+    def pull_status(self,exiting=False):
+        if not self.hw_valid:
+            return
+        with self.lock:
+            if self._dirty_board_info:
+                self.transport.payload_out[0] = RPC_GET_PIMU_BOARD_INFO
+                self.transport.queue_rpc(1, self.rpc_board_info_reply)
+                self._dirty_board_info=False
+
+            # Queue Body Status RPC
+            self.transport.payload_out[0] = RPC_GET_PIMU_STATUS
+            self.transport.queue_rpc(1, self.rpc_status_reply)
+            self.transport.step(exiting=exiting)
+        self.status_rr=copy.deepcopy(self.status)
+		self.status_rr.pop('transport', None)
+		self.status_rr.pop('imu', None)
+		self.status_rr.pop('at_cliff', None)
+		self.status_rr.pop('cliff_range', None)
+
+
 class stretch_RR(Robot):
 	def __init__(self):
 		Robot.__init__(self)
-		# self.pimu=Pimu_RR()
-		# self.head=Head_RR()
-
 		self.base=Base_RR()
 
 		self.lift=Lift_RR()
 
 		self.arm=Arm_RR()
 
+		self.wacc=Wacc_RR()
+
+		self.pimu=pimu_RR()
+
 	def get_arm(self):
-		return self.arm, "edu.rpi.robotics.stretch.stretch_arm"
+		return self.arm, "edu.rpi.robotics.stretch.stretch_Arm"
 	def get_base(self):
-		return self.base, "edu.rpi.robotics.stretch.stretch_base"
+		return self.base, "edu.rpi.robotics.stretch.stretch_Base"
 	def get_head(self):
-		return self.head, "edu.rpi.robotics.stretch.stretch_head"
+		return self.head, "edu.rpi.robotics.stretch.stretch_Head"
 	def get_wacc(self):
-		return self.wacc, "edu.rpi.robotics.stretch.stretch_wacc"
+		return self.wacc, "edu.rpi.robotics.stretch.stretch_Wacc"
 	def get_lift(self):
-		return self.lift, "edu.rpi.robotics.stretch.stretch_lift"
+		return self.lift, "edu.rpi.robotics.stretch.stretch_Lift"
+	def get_end_of_arm(self):
+		return self.end_of_arm, "edu.rpi.robotics.stretch.stretch_EndOfArm"
+	def get_pimu(self):
+		return self.pimu, "edu.rpi.robotics.stretch.stretch_Pimu"
 
 
 
@@ -258,7 +311,8 @@ def main():
 	if not robot.is_calibrated():
 		robot.home()
 	with RR.ServerNodeSetup("Stretch_Node", 23232) as node_setup:
-
+		#adjust RR timeout
+		RRN.RequestTimeout=20
 		#Register Service types
 		RRN.RegisterServiceTypeFromFile('robdef/edu.rpi.robotics.stretch')
 		#create object
