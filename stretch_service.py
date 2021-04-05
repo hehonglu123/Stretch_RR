@@ -8,7 +8,8 @@ from stretch_body.lift import Lift
 from stretch_body.pimu import Pimu
 from stretch_body.head import Head
 from stretch_body.wacc import Wacc
-
+from stretch_body.transport import *
+from math import *
 
 #### python2.7 RR depreciate
 # # 1. set_ reserved, need overwritten
@@ -26,7 +27,7 @@ from stretch_body.wacc import Wacc
 # # 4. ALL status dict needs overwritten
 ####timeout option
 # # --robotraconteur-disable-timeouts=true
-class arm_RR(Arm):
+class Arm_RR(Arm):
 	def __init__(self):
 		Arm.__init__(self)
 		self.status_rr= {'pos': 0.0, 'vel': 0.0, 'force':0.0,'timestamp_pc':0}
@@ -40,7 +41,7 @@ class arm_RR(Arm):
 		self.status_rr=copy.deepcopy(self.status)
 		self.status_rr.pop('motor', None)
 
-class base_RR(Base):
+class Base_RR(Base):
 	def __init__(self):
 		Base.__init__(self)
 		self.status_rr= {'timestamp_pc':0,'x':0,'y':0,'theta':0,'x_vel':0,'y_vel':0,'theta_vel':0, 'pose_time_s':0,'effort': [0, 0]}
@@ -186,14 +187,14 @@ class base_RR(Base):
 		self.status_rr.pop('left_wheel', None)
 		self.status_rr.pop('right_wheel', None)
 
-	def rr_set_translate_velocity(self, v_m):
+	def r_set_translate_velocity(self, v_m):
 		self.set_translate_velocity(v_m)
-	def rr_set_rotational_velocity(self, v_r):
-		self.rr_set_rotational_velocity(v_r)
-	def rr_set_velocity(self, v_m, w_r, a=None):
-		self.rr_set_velocity(v_m, w_r)
+	def r_set_rotational_velocity(self, v_r):
+		self.set_rotational_velocity(v_r)
+	def r_set_velocity(self, v_m, w_r, a=None):
+		self.set_velocity(v_m, w_r)
 
-class wacc_RR(Wacc):
+class Wacc_RR(Wacc):
 	def __init__(self):
 		Wacc.__init__(self)
 		self.status_rr= { 'ax':0,'ay':0,'az':0,'a0':0,'d0':0,'d1':0, 'd2':0,'d3':0,'single_tap_count': 0, 'state':0, 'debug':0,
@@ -220,38 +221,55 @@ class wacc_RR(Wacc):
 			self.status_rr=copy.deepcopy(self.status)
 			self.status_rr.pop('transport', None)
 			return sidx
-	def rr_set_D2(self,on):#0 or 1
+	def r_set_D2(self,on):#0 or 1
 		self.set_D2(on)
 
-	def rr_set_D3(self,on): #0 or 1
+	def r_set_D3(self,on): #0 or 1
 		self.set_D3(on)
 
-class pimu_RR(Wacc):
+
+class Lift_RR(Lift):
+	def __init__(self):
+		Lift.__init__(self)
+		self.status_rr={'timestamp_pc':0,'pos': 0.0, 'vel': 0.0, 'force':0.0}
+	def pull_status(self):
+		self.motor.pull_status()
+		self.status['timestamp_pc'] = time.time()
+		self.status['pos']= self.motor_rad_to_translate_m(self.status['motor']['pos'])
+		self.status['vel'] = self.motor_rad_to_translate_m(self.status['motor']['vel'])
+		self.status['force'] = self.motor_current_to_translate_force(self.status['motor']['current'])
+
+		self.status_rr=copy.deepcopy(self.status)
+		self.status_rr.pop('motor', None)
+
+
+class Pimu_RR(Pimu):
 	def __init__(self):
 		Pimu.__init__(self)
+		self.hw_valid=False
 		self.status_rr= {'voltage': 0, 'current': 0, 'temp': 0,'cpu_temp': 0, 'frame_id': 0,
 					   'timestamp': 0, 'runstop_event': False, 'bump_event_cnt': 0,
 					   'cliff_event': False, 'fan_on': False, 'buzzer_on': False, 'low_voltage_alert':False,'high_current_alert':False,'over_tilt_alert':False,
 					   'debug':0}
-	def rr_get_voltage(self,raw):
+	def r_get_voltage(self,raw):
 		return self.get_voltage(raw)
-	def rr_get_temp(self,raw):
+	def r_get_temp(self,raw):
 		
 		return self.get_temp(raw)
 
-	def rr_get_current(self,raw):
+	def r_get_current(self,raw):
 		return self.get_current(raw)
 
-	def rr_set_fan_on(self):
+	def r_set_fan_on(self):
 		return self.set_fan_on()
 
-	def rr_set_fan_off(self):
+	def r_set_fan_off(self):
 		return self.set_fan_off()
 
-	def rr_set_buzzer_on(self):
+	def r_set_buzzer_on(self):
 		return self.set_buzzer_on()
 
-	def rr_set_buzzer_off(self):
+	def r_set_buzzer_off(self):
 		return self.set_buzzer_off()
 
 	def pull_status(self,exiting=False):
@@ -274,7 +292,8 @@ class pimu_RR(Wacc):
 		self.status_rr.pop('cliff_range', None)
 
 
-class stretch_RR(Robot):
+
+class Stretch_RR(Robot):
 	def __init__(self):
 		Robot.__init__(self)
 		self.base=Base_RR()
@@ -285,7 +304,7 @@ class stretch_RR(Robot):
 
 		self.wacc=Wacc_RR()
 
-		self.pimu=pimu_RR()
+		self.pimu=Pimu_RR()
 
 	def get_arm(self):
 		return self.arm, "edu.rpi.robotics.stretch.stretch_Arm"
@@ -305,7 +324,7 @@ class stretch_RR(Robot):
 
 
 def main():
-	robot=stretch_RR()
+	robot=Stretch_RR()
 	robot.startup()
 	#auto homing
 	if not robot.is_calibrated():

@@ -28,15 +28,15 @@ object stretch_Pimu
 	function 	void			trigger_beep()
 	function 	void			imu_reset()
 	function 	void			trigger_motor_sync()
-	function 	void			rr_set_fan_on()
-	function 	void			rr_set_fan_off()
-	function 	void			rr_set_buzzer_on()
-	function 	void			rr_set_buzzer_off()
+	function 	void			r_set_fan_on()
+	function 	void			r_set_fan_off()
+	function 	void			r_set_buzzer_on()
+	function 	void			r_set_buzzer_off()
 	function 	void			board_reset()
 	function 	void			cliff_event_reset()
-	function 	double			rr_get_voltage(double raw)
-	function 	double			rr_get_temp(double raw)
-	function 	double			rr_get_current(double raw)
+	function 	double			r_get_voltage(double raw)
+	function 	double			r_get_temp(double raw)
+	function 	double			r_get_current(double raw)
 end
 
 object stretch_Base
@@ -51,15 +51,16 @@ object stretch_Base
 	function 	void			enable_pos_incr_mode()
 	function 	void			translate_by(double x_m)
 	function 	void			rotate_by(double x_m)
-	function 	void			rr_set_translate_velocity(double v_m)
-	function 	void			rr_set_rotational_velocity(double v_r)
-	function 	void			rr_set_velocity(double v_m, double w_r)
+	function 	void			r_set_translate_velocity(double v_m)
+	function 	void			r_set_rotational_velocity(double v_r)
+	function 	void			r_set_velocity(double v_m, double w_r)
 
 	function 	void			step_sentry(double x_lift, double x_arm, double x_wrist)
 	function 	void			push_command()
 end
 object stretch_Lift
 	property	string			name
+	property	double{string}	status_rr
 	function 	void			startup()
 	function 	void			stop()
 	function 	void			push_command()
@@ -80,14 +81,14 @@ object stretch_Wacc
 	property	double{string}	status_rr	
 	function 	void			startup()
 	function 	void			stop()
-	function 	void			rr_set_D2(uint8 on)
-	function 	void			rr_set_D3(uint8 on)
+	function 	void			r_set_D2(uint8 on)
+	function 	void			r_set_D3(uint8 on)
 	function 	void			push_command()
 end
 object stretch_Imu
 	property	double{string}	status_rr
-	function	double{string}	rr_get_status()
-	function	double{list}	rr_get_quaternion()
+	function	double{string}	r_get_status()
+	function	double{list}	r_get_quaternion()
 end
 
 object stretch_EndOfArm
