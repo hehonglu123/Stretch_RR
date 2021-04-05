@@ -230,44 +230,44 @@ class pimu_RR(Wacc):
 	def __init__(self):
 		Pimu.__init__(self)
 		self.status_rr= {'voltage': 0, 'current': 0, 'temp': 0,'cpu_temp': 0, 'frame_id': 0,
-                       'timestamp': 0, 'runstop_event': False, 'bump_event_cnt': 0,
-                       'cliff_event': False, 'fan_on': False, 'buzzer_on': False, 'low_voltage_alert':False,'high_current_alert':False,'over_tilt_alert':False,
-                       'debug':0}
-    def rr_get_voltage(self,raw):
-    	return self.get_voltage(raw)
+					   'timestamp': 0, 'runstop_event': False, 'bump_event_cnt': 0,
+					   'cliff_event': False, 'fan_on': False, 'buzzer_on': False, 'low_voltage_alert':False,'high_current_alert':False,'over_tilt_alert':False,
+					   'debug':0}
+	def rr_get_voltage(self,raw):
+		return self.get_voltage(raw)
 	def rr_get_temp(self,raw):
-        
-        return self.get_temp(raw)
+		
+		return self.get_temp(raw)
 
-    def rr_get_current(self,raw):
-    	return self.get_current(raw)
+	def rr_get_current(self,raw):
+		return self.get_current(raw)
 
-    def rr_set_fan_on(self):
-        return self.set_fan_on()
+	def rr_set_fan_on(self):
+		return self.set_fan_on()
 
-    def rr_set_fan_off(self):
-        return self.set_fan_off()
+	def rr_set_fan_off(self):
+		return self.set_fan_off()
 
-    def rr_set_buzzer_on(self):
-        return self.set_buzzer_on()
+	def rr_set_buzzer_on(self):
+		return self.set_buzzer_on()
 
-    def rr_set_buzzer_off(self):
-    	return self.set_buzzer_off()
+	def rr_set_buzzer_off(self):
+		return self.set_buzzer_off()
 
-    def pull_status(self,exiting=False):
-        if not self.hw_valid:
-            return
-        with self.lock:
-            if self._dirty_board_info:
-                self.transport.payload_out[0] = RPC_GET_PIMU_BOARD_INFO
-                self.transport.queue_rpc(1, self.rpc_board_info_reply)
-                self._dirty_board_info=False
+	def pull_status(self,exiting=False):
+		if not self.hw_valid:
+			return
+		with self.lock:
+			if self._dirty_board_info:
+				self.transport.payload_out[0] = RPC_GET_PIMU_BOARD_INFO
+				self.transport.queue_rpc(1, self.rpc_board_info_reply)
+				self._dirty_board_info=False
 
-            # Queue Body Status RPC
-            self.transport.payload_out[0] = RPC_GET_PIMU_STATUS
-            self.transport.queue_rpc(1, self.rpc_status_reply)
-            self.transport.step(exiting=exiting)
-        self.status_rr=copy.deepcopy(self.status)
+			# Queue Body Status RPC
+			self.transport.payload_out[0] = RPC_GET_PIMU_STATUS
+			self.transport.queue_rpc(1, self.rpc_status_reply)
+			self.transport.step(exiting=exiting)
+		self.status_rr=copy.deepcopy(self.status)
 		self.status_rr.pop('transport', None)
 		self.status_rr.pop('imu', None)
 		self.status_rr.pop('at_cliff', None)
