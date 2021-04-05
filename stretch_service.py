@@ -9,6 +9,7 @@ from stretch_body.pimu import Pimu
 from stretch_body.head import Head
 from stretch_body.wacc import Wacc
 from stretch_body.transport import *
+from stretch_body.stepper import *
 from math import *
 
 #### python2.7 RR depreciate
@@ -246,7 +247,6 @@ class Lift_RR(Lift):
 class Pimu_RR(Pimu):
 	def __init__(self):
 		Pimu.__init__(self)
-		self.hw_valid=False
 		self.status_rr= {'voltage': 0, 'current': 0, 'temp': 0,'cpu_temp': 0, 'frame_id': 0,
 					   'timestamp': 0, 'runstop_event': False, 'bump_event_cnt': 0,
 					   'cliff_event': False, 'fan_on': False, 'buzzer_on': False, 'low_voltage_alert':False,'high_current_alert':False,'over_tilt_alert':False,
@@ -291,6 +291,12 @@ class Pimu_RR(Pimu):
 		self.status_rr.pop('at_cliff', None)
 		self.status_rr.pop('cliff_range', None)
 
+	def startup(self):
+		with self.lock:
+			self.hw_valid=self.transport.startup()
+			self.push_command()
+			self.pull_status()
+
 
 
 class Stretch_RR(Robot):
@@ -305,6 +311,7 @@ class Stretch_RR(Robot):
 		self.wacc=Wacc_RR()
 
 		self.pimu=Pimu_RR()
+		self.devices={ 'pimu':self.pimu, 'base':self.base, 'lift':self.lift, 'arm': self.arm, 'head': self.head, 'wacc':self.wacc, 'end_of_arm':self.end_of_arm}
 
 	def get_arm(self):
 		return self.arm, "edu.rpi.robotics.stretch.stretch_Arm"
@@ -326,6 +333,8 @@ class Stretch_RR(Robot):
 def main():
 	robot=Stretch_RR()
 	robot.startup()
+	robot.pimu.startup()
+
 	#auto homing
 	if not robot.is_calibrated():
 		robot.home()
