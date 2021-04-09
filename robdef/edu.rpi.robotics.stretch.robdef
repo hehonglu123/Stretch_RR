@@ -4,7 +4,7 @@ stdver 0.9
 
 object stretch_Arm
 	property	string			name
-	property	double{string}	status_rr
+	wire		double{string}	status_rr
 	function 	void			startup()
 	function 	void			stop()
 	function 	void			push_command()
@@ -15,7 +15,7 @@ end
 object stretch_Pimu
 	property	bool			verbose
 	objref		stretch_Imu 	imu
-	property	double{string}	status_rr
+	wire		double{string}	status_rr
 	property	double{string}	board_info
 	property	bool			fan_on_last
 	property	double			ts_last_fan_on
@@ -44,7 +44,7 @@ object stretch_Base
 	property	bool			first_step
 	property	double			meters_per_motor_rad
 	property	double			wheel_separation_m 
-	property	double{string}	status_rr
+	wire		double{string}	status_rr
 	function 	void			startup()
 	function 	void			stop()
 	function 	void			enable_freewheel_mode()
@@ -60,7 +60,7 @@ object stretch_Base
 end
 object stretch_Lift
 	property	string			name
-	property	double{string}	status_rr
+	wire		double{string}	status_rr
 	function 	void			startup()
 	function 	void			stop()
 	function 	void			push_command()
@@ -78,7 +78,7 @@ object stretch_Head
 	function	void			move_by(string joint, double x_r)
 end
 object stretch_Wacc
-	property	double{string}	status_rr	
+	wire		double{string}	status_rr	
 	function 	void			startup()
 	function 	void			stop()
 	function 	void			r_set_D2(uint8 on)
@@ -86,7 +86,7 @@ object stretch_Wacc
 	function 	void			push_command()
 end
 object stretch_Imu
-	property	double{string}	status_rr
+	wire		double{string}	status_rr
 	function	double{string}	r_get_status()
 	function	double{list}	r_get_quaternion()
 end

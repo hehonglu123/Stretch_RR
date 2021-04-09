@@ -31,7 +31,7 @@ from math import *
 class Arm_RR(Arm):
 	def __init__(self):
 		Arm.__init__(self)
-		self.status_rr= {'pos': 0.0, 'vel': 0.0, 'force':0.0,'timestamp_pc':0}
+		# self.status_rr= {'pos': 0.0, 'vel': 0.0, 'force':0.0,'timestamp_pc':0}
 	#status overwrite, no motor
 	def pull_status(self):
 		self.motor.pull_status()
@@ -39,13 +39,14 @@ class Arm_RR(Arm):
 		self.status['pos']= self.motor_rad_to_translate(self.status['motor']['pos'])
 		self.status['vel'] = self.motor_rad_to_translate(self.status['motor']['vel'])
 		self.status['force'] = self.motor_current_to_translate_force(self.status['motor']['current'])
-		self.status_rr=copy.deepcopy(self.status)
-		self.status_rr.pop('motor', None)
+		self.status_rr_temp=copy.deepcopy(self.status)
+		self.status_rr_temp.pop('motor', None)
+		self.status_rr.OutValue=self.status_rr_temp
 
 class Base_RR(Base):
 	def __init__(self):
 		Base.__init__(self)
-		self.status_rr= {'timestamp_pc':0,'x':0,'y':0,'theta':0,'x_vel':0,'y_vel':0,'theta_vel':0, 'pose_time_s':0,'effort': [0, 0]}
+		# self.status_rr= {'timestamp_pc':0,'x':0,'y':0,'theta':0,'x_vel':0,'y_vel':0,'theta_vel':0, 'pose_time_s':0,'effort': [0, 0]}
 	#status overwrite, no wheel
 	def pull_status(self):
 		"""
@@ -184,9 +185,10 @@ class Base_RR(Base):
 				self.status['y'] = prev_y + delta_y
 				self.status['theta'] = (prev_theta + delta_theta) % (2.0 * pi)
 
-		self.status_rr=copy.deepcopy(self.status)
-		self.status_rr.pop('left_wheel', None)
-		self.status_rr.pop('right_wheel', None)
+		self.status_rr_temp=copy.deepcopy(self.status)
+		self.status_rr_temp.pop('left_wheel', None)
+		self.status_rr_temp.pop('right_wheel', None)
+		self.status_rr.OutValue=self.status_rr_temp
 
 	def r_set_translate_velocity(self, v_m):
 		self.set_translate_velocity(v_m)
@@ -198,8 +200,7 @@ class Base_RR(Base):
 class Wacc_RR(Wacc):
 	def __init__(self):
 		Wacc.__init__(self)
-		self.status_rr= { 'ax':0,'ay':0,'az':0,'a0':0,'d0':0,'d1':0, 'd2':0,'d3':0,'single_tap_count': 0, 'state':0, 'debug':0,
-					   'timestamp': 0}
+		# self.status_rr= { 'ax':0,'ay':0,'az':0,'a0':0,'d0':0,'d1':0, 'd2':0,'d3':0,'single_tap_count': 0, 'state':0, 'debug':0,'timestamp': 0}
 	#status overwrite, no wheel
 	def unpack_status(self,s):
 		with self.lock:
@@ -219,8 +220,9 @@ class Wacc_RR(Wacc):
 			self.status['timestamp'] = self.timestamp.set(unpack_uint32_t(s[sidx:]));sidx += 4
 			self.status['debug'] = unpack_uint32_t(s[sidx:]);sidx += 4
 			
-			self.status_rr=copy.deepcopy(self.status)
-			self.status_rr.pop('transport', None)
+			self.status_rr_temp=copy.deepcopy(self.status)
+			self.status_rr_temp.pop('transport', None)
+			self.status_rr.OutValue=self.status_rr_temp
 			return sidx
 	def r_set_D2(self,on):#0 or 1
 		self.set_D2(on)
@@ -232,7 +234,7 @@ class Wacc_RR(Wacc):
 class Lift_RR(Lift):
 	def __init__(self):
 		Lift.__init__(self)
-		self.status_rr={'timestamp_pc':0,'pos': 0.0, 'vel': 0.0, 'force':0.0}
+		# self.status_rr={'timestamp_pc':0,'pos': 0.0, 'vel': 0.0, 'force':0.0}
 	def pull_status(self):
 		self.motor.pull_status()
 		self.status['timestamp_pc'] = time.time()
@@ -240,17 +242,18 @@ class Lift_RR(Lift):
 		self.status['vel'] = self.motor_rad_to_translate_m(self.status['motor']['vel'])
 		self.status['force'] = self.motor_current_to_translate_force(self.status['motor']['current'])
 
-		self.status_rr=copy.deepcopy(self.status)
-		self.status_rr.pop('motor', None)
+		self.status_rr_temp=copy.deepcopy(self.status)
+		self.status_rr_temp.pop('motor', None)
+		self.status_rr.OutValue=self.status_rr_temp
 
 
 class Pimu_RR(Pimu):
 	def __init__(self):
 		Pimu.__init__(self)
-		self.status_rr= {'voltage': 0, 'current': 0, 'temp': 0,'cpu_temp': 0, 'frame_id': 0,
-					   'timestamp': 0, 'runstop_event': False, 'bump_event_cnt': 0,
-					   'cliff_event': False, 'fan_on': False, 'buzzer_on': False, 'low_voltage_alert':False,'high_current_alert':False,'over_tilt_alert':False,
-					   'debug':0}
+		# self.status_rr= {'voltage': 0, 'current': 0, 'temp': 0,'cpu_temp': 0, 'frame_id': 0,
+		# 			   'timestamp': 0, 'runstop_event': False, 'bump_event_cnt': 0,
+		# 			   'cliff_event': False, 'fan_on': False, 'buzzer_on': False, 'low_voltage_alert':False,'high_current_alert':False,'over_tilt_alert':False,
+		# 			   'debug':0}
 	def r_get_voltage(self,raw):
 		return self.get_voltage(raw)
 	def r_get_temp(self,raw):
@@ -285,11 +288,12 @@ class Pimu_RR(Pimu):
 			self.transport.payload_out[0] = RPC_GET_PIMU_STATUS
 			self.transport.queue_rpc(1, self.rpc_status_reply)
 			self.transport.step(exiting=exiting)
-		self.status_rr=copy.deepcopy(self.status)
-		self.status_rr.pop('transport', None)
-		self.status_rr.pop('imu', None)
-		self.status_rr.pop('at_cliff', None)
-		self.status_rr.pop('cliff_range', None)
+		self.status_rr_temp=copy.deepcopy(self.status)
+		self.status_rr_temp.pop('transport', None)
+		self.status_rr_temp.pop('imu', None)
+		self.status_rr_temp.pop('at_cliff', None)
+		self.status_rr_temp.pop('cliff_range', None)
+		self.status_rr.OutValue=self.status_rr_temp
 
 	def startup(self):
 		with self.lock:
