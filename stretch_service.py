@@ -335,18 +335,21 @@ class Stretch_RR(Robot):
 
 
 def main():
-	robot=Stretch_RR()
-	robot.startup()
-	robot.pimu.startup()
-
-	#auto homing
-	if not robot.is_calibrated():
-		robot.home()
+	
 	with RR.ServerNodeSetup("Stretch_Node", 23232) as node_setup:
 		#adjust RR timeout
 		RRN.RequestTimeout=20
 		#Register Service types
 		RRN.RegisterServiceTypeFromFile('robdef/edu.rpi.robotics.stretch')
+
+
+		robot=Stretch_RR()
+		robot.startup()
+		robot.pimu.startup()
+
+		#auto homing
+		if not robot.is_calibrated():
+			robot.home()
 		#create object
 		RRN.RegisterService("stretch", "edu.rpi.robotics.stretch.stretch", robot)
 		
