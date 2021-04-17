@@ -18,4 +18,4 @@ Keep in mind the service is running on port `23232`
 
 ### Running RR client
 
-Robot Raconteur client can run on most operating system and software, in this repo we have a python example for position commanded jogging and status reading.
+Robot Raconteur client can run on most operating system and software, in this repo we have a python example `stretch_client.py` for position commanded jogging and status reading. If you wish to run this example in a remote machine, simply clone this repo and modify the `localhost` of the url in the client script to the IP address of the Stretch robot.
