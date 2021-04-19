@@ -2,8 +2,8 @@
 from RobotRaconteur.Client import *     #import RR client library
 import sys, time
 import numpy as np
-url1='rr+tcp://[fe80::700f:101d:5c91:6d23]:23232/?nodeid=6124ec84-ca91-4106-945e-316545432ed8&service=stretch'
-url2='rr+tcp://[fe80::ed71:6da5:72c:e52a]:23232/?nodeid=6dfa3a29-2c07-4531-b00e-02269c9ee561&service=stretch'
+url1='rr+tcp://192.168.1.64:23232/?service=stretch'
+url2='rr+tcp://192.168.1.28:23232/?service=stretch'
 
 #Startup, connect, and pull out the camera from the objref    
 robot1=RRN.ConnectService(url1)

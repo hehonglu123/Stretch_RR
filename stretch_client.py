@@ -2,7 +2,7 @@
 from RobotRaconteur.Client import *     #import RR client library
 import sys, time
 import numpy as np
-url='rr+tcp://localhost:23232/?service=stretch'
+url=url='rr+tcp://192.168.1.64:23232/?service=stretch'
 
 #Startup, connect, and pull out different objects from robot object   
 robot=RRN.ConnectService(url)
@@ -36,7 +36,7 @@ while True:
 	except:
 		break
 
-print 'Retracting...'
+print ('Retracting...')
 lift.move_to(0.0)
 arm.move_to(0.0)
 end_of_arm.move_to('wrist_yaw',0.)
