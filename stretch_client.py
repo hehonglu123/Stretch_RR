@@ -2,7 +2,7 @@
 from RobotRaconteur.Client import *     #import RR client library
 import sys, time
 import numpy as np
-url=url='rr+tcp://192.168.1.64:23232/?service=stretch'
+url='rr+tcp://192.168.1.64:23232/?service=stretch'
 
 #Startup, connect, and pull out different objects from robot object   
 robot=RRN.ConnectService(url)
