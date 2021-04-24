@@ -1,6 +1,6 @@
 import RobotRaconteur as RR
 RRN=RR.RobotRaconteurNode.s
-import time, copy
+import time, copy, traceback
 from stretch_body.robot import Robot
 from stretch_body.base import Base
 from stretch_body.arm import Arm
@@ -13,21 +13,7 @@ from stretch_body.stepper import *
 from math import *
 
 #### python2.7 RR depreciate
-# # 1. set_ reserved, need overwritten
-####base
-# 	function 	void			set_translate_velocity(double v_m)
-# 	function 	void			set_rotational_velocity(double v_r)
-# 	function 	void			set_velocity(double v_m, double w_r)
-####wacc
-# 	function 	void			set_D2(uint8 on)
-# 	function 	void			set_D3(uint8 on)
-####stretch
-# 	function 	stretch_status	get_status()
-# # 2. would be nice to have logs on client side
-# # 3. RR request timeout for home()
-# # 4. ALL status dict needs overwritten
-####timeout option
-# # --robotraconteur-disable-timeouts=true
+
 class Arm_RR(Arm):
 	def __init__(self):
 		Arm.__init__(self)
@@ -189,6 +175,7 @@ class Base_RR(Base):
 		self.status_rr_temp=copy.deepcopy(self.status)
 		self.status_rr_temp.pop('left_wheel', None)
 		self.status_rr_temp.pop('right_wheel', None)
+		self.status_rr_temp.pop('effort', None)
 		if hasattr(self,'status_rr'):
 			self.status_rr.OutValue=self.status_rr_temp
 
