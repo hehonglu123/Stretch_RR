@@ -1,6 +1,6 @@
 import termios, fcntl, sys, os, time
 from RobotRaconteur.Client import *  
-url='rr+tcp://192.168.1.64:23232/?service=stretch'
+url='rr+tcp://localhost:23232/?service=stretch'
 
 robot=RRN.ConnectService(url)
 lift=robot.get_lift()
@@ -19,22 +19,16 @@ termios.tcsetattr(fd, termios.TCSANOW, newattr)
 oldflags = fcntl.fcntl(fd, fcntl.F_GETFL)
 fcntl.fcntl(fd, fcntl.F_SETFL, oldflags | os.O_NONBLOCK)
 
-#TODO: Initialize ROS/RR node
-#ROS: create publisher to publish Twist message to corresponding topic name
 
-#RR: connect to service with url
 
 print("Running")
-print("Press Arrow Key to Control Turtle")
+print("Press Arrow Key to Control Stretch")
 print("Press q to quit")
 try:
-    #TODO: hold the script running with ROS/RR way
     while True:
         try:
             #read input and print "command"
             c = sys.stdin.read()
-            #TODO: ROS create message type variable, publish command
-            #TODO: RR call drive function
             if "\x1b[A" in c:
                 print("drive forward")          ####Drive forward
                 base.translate_by(0.05)
