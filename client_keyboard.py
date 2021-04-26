@@ -1,6 +1,6 @@
 import termios, fcntl, sys, os, time
 from RobotRaconteur.Client import *  
-url='rr+tcp://localhost:23232/?service=stretch'
+url='rr+tcp://192.168.50.107:23232/?service=stretch'
 
 robot=RRN.ConnectService(url)
 lift=robot.get_lift()
@@ -27,20 +27,23 @@ print("Press q to quit")
 try:
     while True:
         try:
+
             #read input and print "command"
             c = sys.stdin.read()
             if "\x1b[A" in c:
                 print("drive forward")          ####Drive forward
-                base.translate_by(0.05)
+                base.r_set_translate_velocity(0.2)
             if "\x1b[B" in c:
                 print("drive backward")         ####Drive backward  
-                base.translate_by(-0.05)             
+                base.r_set_translate_velocity(-0.2)
+         
             if "\x1b[C" in c:
-                print("drive right")            ####Drive right
-                base.rotate_by(-0.1)
+                print("rotate right")            ####Drive right
+                base.r_set_rotational_velocity(0.1)
             if "\x1b[D" in c:
-                print("drive left")             ####Drive left
-                base.rotate_by(0.1)
+                print("rotate left")             ####Drive left
+                base.r_set_rotational_velocity(-0.1)
+
             if "w" in c:
                 print("lift up")             
                 lift.move_by(0.02)
@@ -55,11 +58,12 @@ try:
                 arm.move_by(0.02)
             if "q" in c:
                 break
-            robot.push_command()
-            time.sleep(0.1)
+            
 
         except IOError: pass
-        except TypeError: pass
+        except TypeError: base.r_set_velocity(0,0)
+        robot.push_command()
+        time.sleep(0.05)
 #finish reading keyboard input
 finally:
     termios.tcsetattr(fd, termios.TCSAFLUSH, oldterm)

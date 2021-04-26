@@ -12,7 +12,7 @@ parser.add_argument("--robot-name",type=str,help="List of camera names separated
 args, _ = parser.parse_known_args()
 
 
-url='rr+tcp://192.168.1.64:23232/?service=stretch'
+url='rr+tcp://192.168.50.107:23232/?service=stretch'
 robot_sub=RRN.SubscribeService(url)
 robot=robot_sub.GetDefaultClientWait(1)
 lift=robot.get_lift()
