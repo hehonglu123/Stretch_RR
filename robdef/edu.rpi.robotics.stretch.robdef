@@ -5,6 +5,7 @@ stdver 0.9
 object stretch_Arm
 	property	string			name
 	wire		double{string}	status_rr	[readonly]
+	wire		double{string}	motor_status_rr	[readonly]
 	function 	void			startup()
 	function 	void			stop()
 	function 	void			push_command()
@@ -45,6 +46,8 @@ object stretch_Base
 	property	double			meters_per_motor_rad
 	property	double			wheel_separation_m 
 	wire		double{string}	status_rr	[readonly]
+	wire		double{string}	left_wheel_status_rr	[readonly]
+	wire		double{string}	right_wheel_status_rr	[readonly]
 	function 	void			startup()
 	function 	void			stop()
 	function 	void			enable_freewheel_mode()
@@ -61,6 +64,7 @@ end
 object stretch_Lift
 	property	string			name
 	wire		double{string}	status_rr	[readonly]
+	wire		double{string}	motor_status_rr	[readonly]
 	function 	void			startup()
 	function 	void			stop()
 	function 	void			push_command()

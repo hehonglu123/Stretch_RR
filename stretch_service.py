@@ -25,10 +25,17 @@ class Arm_RR(Arm):
 		self.status['pos']= self.motor_rad_to_translate(self.status['motor']['pos'])
 		self.status['vel'] = self.motor_rad_to_translate(self.status['motor']['vel'])
 		self.status['force'] = self.motor_current_to_translate_force(self.status['motor']['current'])
-		self.status_rr_temp=copy.deepcopy(self.status)
-		self.status_rr_temp.pop('motor', None)
+		
 		if hasattr(self,'status_rr'):
-			self.status_rr.OutValue=self.status_rr_temp
+			status_rr_temp=copy.deepcopy(self.status)
+			status_rr_temp.pop('motor', None)
+			self.status_rr.OutValue=status_rr_temp
+
+		
+		if hasattr(self,'motor_status_rr'):
+			motor_status_rr_temp=copy.deepcopy(self.motor.status)
+			motor_status_rr_temp.pop('transport',None)
+			self.motor_status_rr.OutValue=motor_status_rr_temp
 
 class Base_RR(Base):
 	def __init__(self):
@@ -172,12 +179,22 @@ class Base_RR(Base):
 				self.status['y'] = prev_y + delta_y
 				self.status['theta'] = (prev_theta + delta_theta) % (2.0 * pi)
 
-		self.status_rr_temp=copy.deepcopy(self.status)
-		self.status_rr_temp.pop('left_wheel', None)
-		self.status_rr_temp.pop('right_wheel', None)
-		self.status_rr_temp.pop('effort', None)
+		
 		if hasattr(self,'status_rr'):
-			self.status_rr.OutValue=self.status_rr_temp
+			status_rr_temp=copy.deepcopy(self.status)
+			status_rr_temp.pop('left_wheel', None)
+			status_rr_temp.pop('right_wheel', None)
+			status_rr_temp.pop('effort', None)
+			self.status_rr.OutValue=status_rr_temp
+
+
+		if hasattr(self,'left_wheel_status_rr'):
+			left_wheel_status_rr_temp=copy.deepcopy(self.motor.status)
+			right_wheel_status_rr_temp=copy.deepcopy(self.motor.status)
+			left_wheel_status_rr_temp.pop('transport',None)
+			right_wheel_status_rr_temp.pop('transport',None)
+			self.left_wheel_status_rr.OutValue=left_wheel_status_rr_temp
+			self.right_wheel_status_rr.OutValue=right_wheel_status_rr_temp
 
 	def r_set_translate_velocity(self, v_m):
 		self.set_translate_velocity(v_m)
@@ -233,10 +250,17 @@ class Lift_RR(Lift):
 		self.status['vel'] = self.motor_rad_to_translate_m(self.status['motor']['vel'])
 		self.status['force'] = self.motor_current_to_translate_force(self.status['motor']['current'])
 
-		self.status_rr_temp=copy.deepcopy(self.status)
-		self.status_rr_temp.pop('motor', None)
+		
 		if hasattr(self,'status_rr'):
-			self.status_rr.OutValue=self.status_rr_temp
+			status_rr_temp=copy.deepcopy(self.status)
+			status_rr_temp.pop('motor', None)
+			self.status_rr.OutValue=status_rr_temp
+
+		
+		if hasattr(self,'motor_status_rr'):
+			motor_status_rr_temp=copy.deepcopy(self.motor.status)
+			motor_status_rr_temp.pop('transport',None)
+			self.motor_status_rr.OutValue=motor_status_rr_temp
 
 
 class Pimu_RR(Pimu):
@@ -280,13 +304,14 @@ class Pimu_RR(Pimu):
 			self.transport.payload_out[0] = RPC_GET_PIMU_STATUS
 			self.transport.queue_rpc(1, self.rpc_status_reply)
 			self.transport.step(exiting=exiting)
-		self.status_rr_temp=copy.deepcopy(self.status)
-		self.status_rr_temp.pop('transport', None)
-		self.status_rr_temp.pop('imu', None)
-		self.status_rr_temp.pop('at_cliff', None)
-		self.status_rr_temp.pop('cliff_range', None)
+		
 		if hasattr(self,'status_rr'):
-			self.status_rr.OutValue=self.status_rr_temp
+			status_rr_temp=copy.deepcopy(self.status)
+			status_rr_temp.pop('transport', None)
+			status_rr_temp.pop('imu', None)
+			status_rr_temp.pop('at_cliff', None)
+			status_rr_temp.pop('cliff_range', None)
+			self.status_rr.OutValue=status_rr_temp
 
 	def startup(self):
 		with self.lock:
