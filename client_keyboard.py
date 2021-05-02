@@ -39,10 +39,10 @@ try:
          
             if "\x1b[C" in c:
                 print("rotate right")            ####Drive right
-                base.r_set_rotational_velocity(0.1)
+                base.r_set_rotational_velocity(0.2)
             if "\x1b[D" in c:
                 print("rotate left")             ####Drive left
-                base.r_set_rotational_velocity(-0.1)
+                base.r_set_rotational_velocity(-0.2)
 
             if "w" in c:
                 print("lift up")             
@@ -56,6 +56,18 @@ try:
             if "d" in c:
                 print("arm stretch")         
                 arm.move_by(0.02)
+            if "," in c:
+                print("wrist left")         
+                end_of_arm.move_by('wrist_yaw',0.1)
+            if "." in c:
+                print("wrist right")         
+                end_of_arm.move_by('wrist_yaw',-0.1)
+            if "o" in c:
+                print("gripper open")         
+                end_of_arm.move_by('stretch_gripper',10)
+            if "p" in c:
+                print("gripper close")         
+                end_of_arm.move_by('stretch_gripper',-10)
             if "q" in c:
                 break
             
@@ -68,3 +80,5 @@ try:
 finally:
     termios.tcsetattr(fd, termios.TCSAFLUSH, oldterm)
     fcntl.fcntl(fd, fcntl.F_SETFL, oldflags)
+base.r_set_velocity(0,0)
+robot.push_command()

@@ -189,8 +189,8 @@ class Base_RR(Base):
 
 
 		if hasattr(self,'left_wheel_status_rr'):
-			left_wheel_status_rr_temp=copy.deepcopy(self.motor.status)
-			right_wheel_status_rr_temp=copy.deepcopy(self.motor.status)
+			left_wheel_status_rr_temp=copy.deepcopy(self.left_wheel.status)
+			right_wheel_status_rr_temp=copy.deepcopy(self.right_wheel.status)
 			left_wheel_status_rr_temp.pop('transport',None)
 			right_wheel_status_rr_temp.pop('transport',None)
 			self.left_wheel_status_rr.OutValue=left_wheel_status_rr_temp

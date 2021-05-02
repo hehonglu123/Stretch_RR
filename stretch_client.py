@@ -1,6 +1,6 @@
 
 from RobotRaconteur.Client import *     #import RR client library
-import sys, time
+import sys, time, traceback
 import numpy as np
 url='rr+tcp://192.168.1.64:23232/?service=stretch'
 
@@ -13,7 +13,7 @@ base=robot.get_base()
 
 #Connect to arm status RR wire
 arm_status=arm.status_rr.Connect()
-
+arm_motor_status=arm.motor_status_rr.Connect()
 
 #Go to initial position first
 lift.move_to(0.5) 
@@ -33,9 +33,11 @@ while True:
 		base.translate_by(0.01*np.sin((time.time()-now)/2.))
 		robot.push_command()
 		#print force reading from arm
-		print(arm_status.InValue['force'])
+		print('arm force: ',arm_status.InValue['force'])
+		print('arm motor current ', arm_motor_status.InValue['current'])
 		time.sleep(0.05)
 	except:
+		traceback.print_exc()
 		break
 
 print ('Retracting...')
